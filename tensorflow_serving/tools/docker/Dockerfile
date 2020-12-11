@@ -25,6 +25,13 @@ LABEL maintainer="gvasudevan@google.com"
 LABEL tensorflow_serving_github_branchtag=${TF_SERVING_VERSION_GIT_BRANCH}
 LABEL tensorflow_serving_github_commit=${TF_SERVING_VERSION_GIT_COMMIT}
 
+ENV http_proxy=http://proxy.daumkakao.io:3128
+ENV https_proxy=$http_proxy
+ENV HTTP_PROXY=$http_proxy
+ENV HTTPS_PROXY=$http_proxy
+ENV no_proxy="localhost,127.0.0.1,127.0.0.0/8,192.168.0.0/16,10.0.0.0/8,172.16.0.0/12,.daumkakao.io,.daumcorp.com,.daum.net,.kakao.com,.iwilab.com,.daumkakao.io,.dakao.io,.9rum.cc,daumkakao.io,daumcorp.com,daum.net,kakao.com,iwilab.com,daumkakao.io,dakao.io,9rum.cc,.agit.in,.tistory.com"
+ENV NO_PROXY=$no_proxy
+
 RUN apt-get update && apt-get install -y --no-install-recommends \
         ca-certificates \
         && \
@@ -51,7 +58,7 @@ ENV MODEL_NAME=model
 # Create a script that runs the model server so we can use environment variables
 # while also passing in arguments from the docker command line
 RUN echo '#!/bin/bash \n\n\
-tensorflow_model_server --port=8500 --rest_api_port=8501 \
+tensorflow_model_server --port=23240 --rest_api_port=23241 \
 --model_name=${MODEL_NAME} --model_base_path=${MODEL_BASE_PATH}/${MODEL_NAME} \
 "$@"' > /usr/bin/tf_serving_entrypoint.sh \
 && chmod +x /usr/bin/tf_serving_entrypoint.sh
